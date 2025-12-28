@@ -6,7 +6,10 @@ const blacklistSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
+    uppercase: true,
+    unique: true   // prevent duplicates
   },
+
   idProof: {
     type: {
       type: String,

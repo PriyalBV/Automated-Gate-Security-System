@@ -1,12 +1,9 @@
+//models/gatePass.js
 // models/gatePass.js
 const mongoose = require("mongoose");
 
 const gatePassSchema = new mongoose.Schema({
-  student: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Student",       // Reference to Student collection
-    required: true
-  },
+  
 
   studentId: {
     type: String,
@@ -46,4 +43,5 @@ const gatePassSchema = new mongoose.Schema({
 // Optional: fast lookups
 gatePassSchema.index({ studentId: 1, expectedExitDate: -1 });
 
-module.exports = mongoose.model("GatePass", gatePassSchema);
+
+module.exports = mongoose.models.GatePass || mongoose.model("GatePass", gatePassSchema);

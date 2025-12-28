@@ -27,7 +27,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       </div>
 
       <nav className="flex flex-col space-y-2">
-        {[
+      {[
           { name: "Handle Requests", icon: "✅", path: "/admin/requests" },
           { name: "Manage Blacklist", icon: "🚫", path: "/admin/blacklist" },
           { name: "Manage Whitelist", icon: "✅", path: "/admin/whitelist" },
@@ -48,10 +48,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           >
             <span className="text-xl">{item.icon}</span>
             <span className="font-semibold">{item.name}</span>
-            <span className="absolute inset-0 bg-gradient-to-r from-white/30 via-white/10 to-white/30 opacity-0 group-hover:opacity-30 animate-shine rounded-xl pointer-events-none"></span>
           </Link>
         ))}
       </nav>
+
     </div>
   );
 }

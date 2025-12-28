@@ -91,22 +91,54 @@ export default function PreVisit() {
       : true
   );
 
-  const handleSubmit = (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
   setSubmitAttempted(true);
 
   const errors = [];
 
+  // ===== COMMON VALIDATION =====
   if (!formData.visitorName.trim()) errors.push("Visitor Name is required");
-  if (!formData.idProofType.trim()) errors.push("ID Proof Type is required");
-  if (!formData.visitorIdProof.trim()) errors.push("ID Proof Number is required");
-  if (formData.idProofType && !validateID(formData.idProofType, formData.visitorIdProof))
+
+ // ⭐ Student ID OPTIONAL
+if (formData.studentId.trim()) {
+  // If studentId is entered, studentName should also be entered
+  if (!formData.studentName.trim()) {
+    errors.push("Student Name is required if Student ID is provided");
+  }
+}
+
+  if (!formData.idProofType.trim())
+    errors.push("ID Proof Type is required");
+
+  if (!formData.visitorIdProof.trim())
+    errors.push("ID Proof Number is required");
+
+  if (
+    formData.idProofType &&
+    !validateID(formData.idProofType, formData.visitorIdProof)
+  ) {
     errors.push(`Invalid ${formData.idProofType} format`);
-  if (!formData.dateOfVisit.trim()) errors.push("Date of Visit is required");
-  if (!formData.reasonOfVisit.trim()) errors.push("Reason of Visit is required");
-  if (formData.reasonOfVisit === "Other" && !formData.otherReason.trim())
+  }
+  // Optional: studentName diya hai but studentId nahi
+if (formData.studentName.trim() && !formData.studentId.trim()) {
+  errors.push("Student ID is required if Student Name is provided");
+}
+
+
+  if (!formData.dateOfVisit.trim())
+    errors.push("Date of Visit is required");
+
+  if (!formData.reasonOfVisit.trim())
+    errors.push("Reason of Visit is required");
+
+  if (formData.reasonOfVisit === "Other" && !formData.otherReason.trim()) {
     errors.push("Please specify the reason for visit");
-  if (!phoneValid) errors.push("Invalid Phone Number (6-15 digits)");
+  }
+
+  if (!phoneValid)
+    errors.push("Invalid Phone Number (6–15 digits)");
+
   if (!formData.numberOfPeople || Number(formData.numberOfPeople) <= 0)
     errors.push("Number of People must be greater than 0");
 
@@ -120,33 +152,135 @@ export default function PreVisit() {
     return;
   }
 
-  // If no errors, submit form
-  console.log("Pre-Visit Form Data:", formData);
+  try {
+    // =====================================================
+    // 🔥 STEP 1: CHECK STUDENT ID EXISTENCE
+    // =====================================================
+    if (formData.studentId.trim()) {
+  const studentCheck = await fetch(
+    `http://localhost:5000/api/students/check/${formData.studentId}`
+  );
 
+  if (!studentCheck.ok) {
+    Swal.fire({
+      icon: "error",
+      title: "Invalid Student ID",
+      text: "❌ No such student ID exists in records",
+      confirmButtonColor: "#8B5E3C",
+    });
+    return;
+  }
+}
+
+    let response;
+
+    // =====================================================
+    // 🔹 CASE 1: Reason = Other → REQUEST SCHEMA
+    // =====================================================
+    if (formData.reasonOfVisit === "Other") {
+      const requestPayload = {
+        visitorName: formData.visitorName,
+        studentName: formData.studentName,
+        studentId: formData.studentId,
+        idProofType: formData.idProofType,
+        visitorIdProof: formData.visitorIdProof,
+        vehicleNumber: formData.vehicleNumber?.toUpperCase() || "",
+        dateOfVisit: formData.dateOfVisit,
+        numberOfPeople: Number(formData.numberOfPeople),
+        reasonOfVisit: "Other",
+        otherReason: formData.otherReason,
+        phoneNumber: formData.phoneNumber,
+        type: "non-parent" // ✅ AUTO
+      };
+
+      response = await fetch(
+        "http://localhost:5000/api/requests/create",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestPayload),
+        }
+      );
+    }
+
+    // =====================================================
+    // 🔹 CASE 2: Reason ≠ Other → OCCASIONAL VISITOR
+    // =====================================================
+    else {
+      const occasionalPayload = {
+        visitorName: formData.visitorName,
+        noOfCompanions: Number(formData.numberOfPeople),
+        vehicleNo: formData.vehicleNumber?.toUpperCase() || "",
+        visitorType: "Non-Parent",
+        reason: formData.reasonOfVisit,
+        phoneNumber: formData.phoneNumber,
+        dateOfVisit: formData.dateOfVisit
+      };
+
+      response = await fetch(
+        "http://localhost:5000/api/occasional-visitors",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(occasionalPayload),
+        }
+      );
+    }
+
+    const data = await response.json();
+    if (response.status === 409) {
   Swal.fire({
-    icon: "success",
-    title: "Form Submitted!",
-    text: "🎉 Your pre-visit request has been submitted successfully.",
+    icon: "info",
+    title: "Request Already Made",
+    text: data.message || "You have already submitted a request for this date.",
     confirmButtonColor: "#8B5E3C",
   });
+  return; // 🚫 STOP further execution
+}
+    if (response.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Form Submitted!",
+        text: "🎉 Your pre-visit request has been submitted successfully.",
+        confirmButtonColor: "#8B5E3C",
+      });
 
-  // Reset form
-  setFormData({
-    visitorName: "",
-    studentName: "",
-    studentId: "",
-    idProofType: "",
-    visitorIdProof: "",
-    vehicleNumber: "",
-    dateOfVisit: "",
-    numberOfPeople: "",
-    reasonOfVisit: "",
-    otherReason: "",
-    phoneNumber: "",
-  });
+      setFormData({
+        visitorName: "",
+        studentName: "",
+        studentId: "",
+        idProofType: "",
+        visitorIdProof: "",
+        vehicleNumber: "",
+        dateOfVisit: "",
+        numberOfPeople: "",
+        reasonOfVisit: "",
+        otherReason: "",
+        phoneNumber: "",
+      });
 
-  setSubmitAttempted(false);
+      setSubmitAttempted(false);
+    }
+    else {
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: data.message || data.error || "Something went wrong",
+        confirmButtonColor: "#8B5E3C",
+      });
+    }
+  } catch (err) {
+    console.error("❌ Submission error:", err);
+    Swal.fire({
+      icon: "error",
+      title: "Submission Failed",
+      text: "Network or server error",
+      confirmButtonColor: "#8B5E3C",
+    });
+  }
 };
+
+
 
   return (
     <div className="min-h-screen font-sans bg-gradient-to-br from-[#f9ede3] via-[#f5e3d1] to-[#e7c9a9] flex flex-col">
@@ -195,6 +329,39 @@ export default function PreVisit() {
               <p className="text-red-600 text-sm mt-1">This field is required</p>
             )}
           </div>
+          {/* Student Name */}
+<div>
+  <label className="block mb-2 font-semibold text-sm uppercase tracking-wider text-brown/80">
+    Student Name 
+  </label>
+  <input
+    type="text"
+    name="studentName"
+    value={formData.studentName}
+    onChange={handleChange}
+    className="w-full px-4 py-3 rounded-xl border border-brown/50"
+  />
+  {submitAttempted && !formData.studentName.trim() && (
+    <p className="text-red-600 text-sm mt-1">Student Name is required</p>
+  )}
+</div>
+
+{/* Student ID */}
+<div>
+  <label className="block mb-2 font-semibold text-sm uppercase tracking-wider text-brown/80">
+    Student ID 
+  </label>
+  <input
+    type="text"
+    name="studentId"
+    value={formData.studentId}
+    onChange={handleChange}
+    className="w-full px-4 py-3 rounded-xl border border-brown/50"
+  />
+  {submitAttempted && !formData.studentId.trim() && (
+    <p className="text-red-600 text-sm mt-1">Student ID is required</p>
+  )}
+</div>
 
           {/* ID Proof Type */}
           <div>
@@ -370,4 +537,3 @@ export default function PreVisit() {
     </div>
   );
 }
-//FeedBack

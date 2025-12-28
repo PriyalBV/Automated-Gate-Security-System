@@ -40,7 +40,7 @@ export default function Sidebar2({ sidebarOpen, setSidebarOpen }) {
         {[
           { name: "Dashboard",  path: "/GuardDashboard" },
           { name: "ManualEntry",  path: "/ManualEntry" },
-          { name: "IrisScan",  path: "/IrisScan" },
+          { name: "IrisScan",  path: "/guard/verifyIris" },
           { name: "NumberPlateScan",  path: "/NumberPlateScan" },
           { name: "ExpectedVisitors",  path: "/ExpectedVisitors" },
           { name: "SendAlets",  path: "/SendAlerts" },

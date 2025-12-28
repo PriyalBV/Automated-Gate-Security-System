@@ -2,11 +2,6 @@
 const mongoose = require('mongoose');
 
 const occasionalVisitorSchema = new mongoose.Schema({
-  requestId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Request',   // references the Request table
-    required: true
-  },
   visitorName: {
     type: String,
     required: true,
@@ -31,6 +26,12 @@ const occasionalVisitorSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  phoneNumber: {
+  type: String,
+  required: true,
+  match: [/^\+?[1-9]\d{9,14}$/, "Invalid phone number"]
+}
+,
   dateOfVisit: {
     type: Date,
     required: true

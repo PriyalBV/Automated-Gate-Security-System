@@ -15,10 +15,19 @@ import SettingPage from "./pages/settings";
 import ContactUsPage from "./pages/ContactUs"; // Added
 import CustomerCarePage from "./pages/CustomerCare";
 import PreVisit from "./pages/PreVisit";
+
 import AdminPage from "./pages/Admin/Dashboard";
+import WhitelistPage from "./pages/Admin/Whitelist";
+import BlacklistPage from "./pages/Admin/Blacklist";
+import GuardsPage from "./pages/Admin/Guards";
+
 import GuardDashboard from "./pages/Guard/Dashboard";
 import ManualEntryForm from "./pages/Guard/ManualEntryForm";   // your new form
+import VerifyIris from "./pages/Guard/verifyIris";
+
 import ParentDashboard from "./pages/Parent/Dashboard";
+import ParentVisitRequest from "./pages/Parent/parentVisit";
+
 function App() {
   return (
     <Router>
@@ -39,11 +48,18 @@ function App() {
         <Route path="/pre-visit" element={<PreVisit />} />
 
         <Route path="/admin/dashboard" element={<AdminPage />} />
+        <Route path="/admin/whitelist" element={<WhitelistPage />} />
+        <Route path="/admin/blacklist" element={<BlacklistPage />} />
+        <Route path="/admin/guard" element={<GuardsPage />} />
+
 
         <Route path="/guard/dashboard" element={<GuardDashboard />} />
         <Route path="/manual-entry" element={<ManualEntryForm />} />
+        <Route path="/guard/verifyIris" element={<VerifyIris />} />
 
         <Route path="/parent/dashboard" element={<ParentDashboard />} />
+        <Route path="/parent-visit-request" element={<ParentVisitRequest />} />
+
       </Routes>
     </Router>
   );
