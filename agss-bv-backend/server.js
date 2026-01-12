@@ -9,7 +9,7 @@ require("dotenv").config();
 
 // Middlewares
 app.use(express.json());
-// app.use(cors());
+ app.use(cors());
 app.use(cors({
   origin: "http://localhost:3000",
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -65,8 +65,8 @@ app.use("/api/guard", guardRoutes);       // /api/guard/register
 app.use("/api/guard", guardLoginRoutes);  // /api/guard/login
 
 
-const manualEntryRoutes = require("./routes/manualEntryRoutes");
-app.use("/api/manual-entry", manualEntryRoutes);
+// const manualEntryRoutes = require("./routes/manualEntryRoutes");
+// app.use("/api/manual-entry", manualEntryRoutes);
 
 // VERIFY ROUTES
 const verifyRoutes = require("./routes/verifyRoutes");
@@ -111,3 +111,33 @@ app.use("/api/parent", parentVisitRoutes);
 // LISTEN
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
+
+const vehicleLogRoutes = require("./routes/vehicleLogs");
+app.use("/api/vehicle-logs", vehicleLogRoutes);
+app.post("/api/vehicle-logs", async (req, res) => {
+  try {
+    const log = new VehicleLog(req.body);
+    await log.save();
+    res.status(201).json({ message: "Log created" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+const pedestrianLogRoutes = require("./routes/pedestrianEntryRoutes");
+app.use("/api/pedestrianLogs", pedestrianLogRoutes);
+app.post("/api/pedestrianLogs", async (req, res) => {
+  try {
+    const log = new PedestrianEntry(req.body);
+    await log.save();
+    res.status(201).json({ message: "Log created" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+const anprLogRoutes = require("./routes/anprLogs");
+app.use("/api", anprLogRoutes);
+
+// module.exports = app;

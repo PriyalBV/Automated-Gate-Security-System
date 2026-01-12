@@ -1,49 +1,110 @@
-// models/vehicleLog.js
 const mongoose = require("mongoose");
+// not being used wrong model --> 11th jan found that 
+const vehicleLogSchema = new mongoose.Schema(
+  {
+    vehicleNo: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true,
+      index: true
+    },
 
-const vehicleLogSchema = new mongoose.Schema({
-  vehicleNo: {
-    type: String,
-    required: true,
-    trim: true,
-    uppercase: true   // Ensures "RJ14AB1234" and "rj14ab1234" are treated same
+    vehicleType: {
+      type: String,
+      enum: ["two", "four"],
+      required: true
+    },
+
+    category: {
+      type: String,
+      enum: ["whitelist", "blacklist", "occasional", "manual"],
+      required: true
+    },
+
+    movementType: {
+      type: String,
+      enum: ["ENTRY", "EXIT"],
+      required: true,
+    },
+
+    decision: {
+      type: String,
+      enum: ["ALLOWED", "DENIED", "NOT_DETECTED"],
+      required: true
+    },
+
+    confidence: {
+      type: Number,
+      min: 0,
+      max: 1
+    },
+
+    source: {
+      type: {
+        type: String,
+        enum: ["ANPR", "MANUAL"],
+        required: true
+      },
+
+      cameraId: {
+        type: String,
+        default: null
+      },
+
+      guardId: {
+        type: String,
+        ref: "User",
+        default: null
+      }
+    },
+
+    scanTime: {
+      type: Date,
+      default: Date.now,
+      index: true
+    },
+
+    driverDetails:{
+      driverName: {
+        type: String,
+        required: false,
+        trim: true
+      },
+
+      phoneNumber: {
+        type: Number,
+        required: false,
+        trim: true
+      },
+
+      proofType: {
+        type: String,
+        required: false,
+        trim: true
+      },
+
+      proofId: {
+        type: String,
+        required: false,
+        trim: true
+      },
+    },
+    reason: {
+      type: String,
+      required: false,
+      trim: true
+    },
+
   },
-
-  entryTime: {
-    type: String,      // e.g., "09:45"
-    required: false
-  },
-
-  entryDate: {
-    type: String,      // e.g., "2025-11-06"
-    required: false
-  },
-
-  exitTime: {
-    type: String,      // e.g., "17:30"
-    required: false
-  },
-
-  exitDate: {
-    type: String,      // e.g., "2025-11-06"
-    required: false
-  },
-
-  status: {
-    type: String,
-    enum: ["inside", "exited"],
-    default: "inside"
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    expires: 60 * 60 * 24 * 365  // auto-delete after 1 year
+  {
+    timestamps: true // createdAt / updatedAt
   }
+);
 
-}, { timestamps: true });
-
-// Index for quick search by vehicle number
-vehicleLogSchema.index({ vehicleNo: 1, entryDate: -1 });
+// Optimized indexes for logs page
+vehicleLogSchema.index({ vehicleNo: 1, scanTime: -1 });
+vehicleLogSchema.index({ movementType: 1 });
+vehicleLogSchema.index({ "source.type": 1 });
 
 module.exports = mongoose.model("VehicleLog", vehicleLogSchema);

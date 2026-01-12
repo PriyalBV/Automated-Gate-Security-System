@@ -158,7 +158,7 @@ if (formData.studentName.trim() && !formData.studentId.trim()) {
     // =====================================================
     if (formData.studentId.trim()) {
   const studentCheck = await fetch(
-    `http://localhost:5000/api/students/check/${formData.studentId}`
+    `http://localhost:4000/api/students/check/${formData.studentId}`
   );
 
   if (!studentCheck.ok) {

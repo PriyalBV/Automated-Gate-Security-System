@@ -39,11 +39,12 @@ export default function Sidebar2({ sidebarOpen, setSidebarOpen }) {
         {/* Sidebar Links */}
         {[
           { name: "Dashboard",  path: "/GuardDashboard" },
-          { name: "ManualEntry",  path: "/ManualEntry" },
-          { name: "IrisScan",  path: "/guard/verifyIris" },
-          { name: "NumberPlateScan",  path: "/NumberPlateScan" },
-          { name: "ExpectedVisitors",  path: "/ExpectedVisitors" },
-          { name: "SendAlets",  path: "/SendAlerts" },
+          { name: "Manual Entry",  path: "/manual-entry" },
+          { name: "Iris Scan",  path: "/guard/verifyIris" },
+          { name: "Four Wheeler Plate Scan",  path: "/guard/verifyNumberPlate" },
+          { name: "Two Wheeler Plate Scan",  path: "/guard/verifyBikePlate" },
+          { name: "Expected Visitors",  path: "/ExpectedVisitors" },
+          { name: "Send Alerts",  path: "/SendAlerts" },
 
         ].map((item) => (
           <Link

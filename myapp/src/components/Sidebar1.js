@@ -38,8 +38,8 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           { name: "System Activity", icon: "📊", path: "/admin/monitor" },
           { name: "Receive Alerts", icon: "🚨", path: "/admin/alerts" },
           { name: "Monitor Guards", icon: "🛡️", path: "/admin/monitor-guard" },
-          { name: "View Student Logs", icon: "📄", path: "/admin/logs" },
-          { name: "View Vehicle Logs", icon: "🚗", path: "/admin/vehicles" },
+          // { name: "View Student Logs", icon: "📄", path: "/admin/logs" },
+          { name: "View Vehicle Logs", icon: "🚗", path: "/admin/vehicle-logs" },
         ].map((item) => (
           <Link
             key={item.name}

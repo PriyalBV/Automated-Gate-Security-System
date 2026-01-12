@@ -9,10 +9,10 @@ import PrPage from "./pages/ParentReg";
 import GrPage from "./pages/GuardReg";
 
 import Setting from "./pages/Setting";
-import FeedbackPage from "./pages/feedback.js"; // Corrected
+import FeedbackPage from "./pages/feedback.js";
 import LoginPage from "./pages/login";
 import SettingPage from "./pages/settings";
-import ContactUsPage from "./pages/ContactUs"; // Added
+import ContactUsPage from "./pages/ContactUs"; 
 import CustomerCarePage from "./pages/CustomerCare";
 import PreVisit from "./pages/PreVisit";
 
@@ -20,10 +20,13 @@ import AdminPage from "./pages/Admin/Dashboard";
 import WhitelistPage from "./pages/Admin/Whitelist";
 import BlacklistPage from "./pages/Admin/Blacklist";
 import GuardsPage from "./pages/Admin/Guards";
+import ViewVehicleLogs from "./pages/Admin/ViewVehicleLogs.jsx";    
 
 import GuardDashboard from "./pages/Guard/Dashboard";
-import ManualEntryForm from "./pages/Guard/ManualEntryForm";   // your new form
+import ManualEntryForm from "./pages/Guard/ManualEntryForm";   
 import VerifyIris from "./pages/Guard/verifyIris";
+import VerifyNumberPlate from "./pages/Guard/VerifyNumberPlate.jsx";
+import VerifyBikePlate from "./pages/Guard/VerifyBikePlate.jsx";
 
 import ParentDashboard from "./pages/Parent/Dashboard";
 import ParentVisitRequest from "./pages/Parent/parentVisit";
@@ -51,11 +54,14 @@ function App() {
         <Route path="/admin/whitelist" element={<WhitelistPage />} />
         <Route path="/admin/blacklist" element={<BlacklistPage />} />
         <Route path="/admin/guard" element={<GuardsPage />} />
+        <Route path="/admin/vehicle-logs" element={<ViewVehicleLogs />} />
 
 
         <Route path="/guard/dashboard" element={<GuardDashboard />} />
         <Route path="/manual-entry" element={<ManualEntryForm />} />
         <Route path="/guard/verifyIris" element={<VerifyIris />} />
+        <Route path="/guard/verifyNumberPlate" element={<VerifyNumberPlate />} />
+        <Route path="/guard/verifyBikePlate" element={<VerifyBikePlate />} />
 
         <Route path="/parent/dashboard" element={<ParentDashboard />} />
         <Route path="/parent-visit-request" element={<ParentVisitRequest />} />

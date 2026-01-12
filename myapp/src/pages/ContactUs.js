@@ -1,26 +1,41 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import HeaderNavbar from "../components/HeaderNavbar";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
+import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
+
+const CONTACT_INFO = [
+  {
+    emoji: "📍",
+    title: "Visit Us",
+    short: "Banasthali Vidyapith, Rajasthan",
+    full: "Banasthali Vidyapith\nP.O. Banasthali Vidyapith\nRajasthan – 304022, India",
+  },
+  {
+    emoji: "📧",
+    title: "Email Us",
+    short: "support@rakshapeeth.com",
+    full: "General: info@rakshapeeth.com\nSupport: support@rakshapeeth.com\nSecurity: security@rakshapeeth.com",
+  },
+  {
+    emoji: "📞",
+    title: "Call Us",
+    short: "+91 98765 43210",
+    full: "Main Office: +91 12345 67890\nSecurity Desk: +91 98765 43210\nEmergency: +91 11111 22222",
+  },
+  {
+    emoji: "🕐",
+    title: "Office Hours",
+    short: "9 AM – 6 PM",
+    full: "Wed – Mon: 9:00 AM – 6:00 PM\nTuesday: Closed\n(Security Desk works 24/7)",
+  },
+];
 
 export default function ContactUs() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [registerOpen, setRegisterOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
-
-  const registerRef = useRef(null);
-  const moreRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (registerRef.current && !registerRef.current.contains(event.target))
-        setRegisterOpen(false);
-      if (moreRef.current && !moreRef.current.contains(event.target))
-        setMoreOpen(false);
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const [activeTab, setActiveTab] = useState("info");
+  const [activeInfo, setActiveInfo] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -35,172 +50,178 @@ export default function ContactUs() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Contact Form Submitted:", formData);
-    alert("✉️ Thank you for reaching out! We'll get back to you soon.");
-    setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+    alert("✨ Thanks for reaching out! We’ll contact you soon.");
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    });
   };
 
   return (
-    <div className="min-h-screen font-sans bg-gradient-to-br from-[#f9ede3] via-[#f5e3d1] to-[#e7c9a9] flex flex-col">
-      {/* Navbar */}
-      <HeaderNavbar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        registerOpen={registerOpen}
-        setRegisterOpen={setRegisterOpen}
-        moreOpen={moreOpen}
-        setMoreOpen={setMoreOpen}
-        registerRef={registerRef}
-        moreRef={moreRef}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-[#f9ede3] via-[#f5e3d1] to-[#e7c9a9] flex flex-col">
+      <HeaderNavbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      {/* Sidebar Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
           onClick={() => setSidebarOpen(false)}
-        ></div>
+        />
       )}
 
-      {/* Sidebar */}
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      {/* Main Content */}
-      <main className="flex-grow w-full max-w-7xl mx-auto px-6 py-16 text-brown">
-        <h2 className="text-4xl md:text-5xl mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-[#C79A63] via-[#8B5E3C] to-[#4B2E1E] font-extrabold tracking-wide leading-relaxed pb-2">
-          Contact Us
-        </h2>
+      <main className="flex-grow max-w-7xl mx-auto px-6 py-16">
+        {/* Heading */}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-5xl font-extrabold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#C79A63] via-[#8B5E3C] to-[#4B2E1E]"
+        >
+          Let’s Talk 💬
+        </motion.h2>
 
-        <p className="text-center text-brown/70 mb-12 text-lg max-w-2xl mx-auto">
-          Have questions or need assistance? We're here to help. Reach out to us through any of the channels below.
+        <p className="text-center text-brown/70 max-w-2xl mx-auto mb-10 text-lg">
+          Questions, feedback, or help? Switch tabs or tap cards to explore ✨
         </p>
 
-        <div className="grid md:grid-cols-2 gap-10 mb-12">
-          {/* Left: Contact Info */}
-          <div className="space-y-6">
-            {[
-              {
-                icon: "📍",
-                title: "Visit Us",
-                desc: (
-                  <>
-                    Banasthali Vidyapith <br />
-                    P.O. Banasthali Vidyapith <br />
-                    Rajasthan 304022, India
-                  </>
-                ),
-              },
-              {
-                icon: "📧",
-                title: "Email Us",
-                desc: (
-                  <>
-                    General: info@rakshapeeth.com <br />
-                    Support: support@rakshapeeth.com <br />
-                    Security: security@rakshapeeth.com
-                  </>
-                ),
-              },
-              {
-                icon: "📞",
-                title: "Call Us",
-                desc: (
-                  <>
-                    Main Office: +91 12345 67890 <br />
-                    Security Desk: +91 98765 43210 <br />
-                    Emergency: +91 11111 22222
-                  </>
-                ),
-              },
-              {
-                icon: "🕐",
-                title: "Office Hours",
-                desc: (
-                  <>
-                    Wed - Mon: 9:00 AM - 6:00 PM <br />
-                    Tuesday: Closed <br />
-                    <span className="text-sm italic">Security desk operates 24/7</span>
-                  </>
-                ),
-              },
-            ].map((info, index) => (
-              <div
-                key={index}
-                className="bg-brown/20 p-8 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.03] transition-all duration-300"
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="text-4xl">{info.icon}</div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2 text-brown">
-                      {info.title}
-                    </h3>
-                    <p className="text-brown/80">{info.desc}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Tabs */}
+        <div className="flex justify-center mb-14">
+          {[
+            { key: "info", label: "📞 Contact Info" },
+            { key: "form", label: "✉️ Contact Form" },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-8 py-3 mx-2 rounded-full font-semibold transition-all ${
+                activeTab === tab.key
+                  ? "bg-gradient-to-r from-[#8B5E3C] to-[#4B2E1E] text-white shadow-xl scale-105"
+                  : "bg-white/70 hover:bg-white shadow-md"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-          {/* Right: Contact Form */}
-          <form
-            onSubmit={handleSubmit}
-            className="bg-brown/20 p-12 md:p-14 rounded-3xl shadow-2xl space-y-8 hover:shadow-3xl transition-all duration-500"
-          >
-            {[
-              { name: "name", label: "Your Name", type: "text", required: true },
-              { name: "email", label: "Email Address", type: "email", required: true },
-              { name: "phone", label: "Phone Number", type: "tel", required: false },
-              { name: "subject", label: "Subject", type: "text", required: true },
-            ].map((field, idx) => (
-              <div key={idx}>
-                <label className="block mb-2 font-semibold text-sm uppercase tracking-wider text-brown/80">
-                  {field.label}{" "}
-                  {field.required && <span className="text-red-600">*</span>}
-                </label>
+        {/* Tab Content */}
+        <AnimatePresence mode="wait">
+          {/* CONTACT INFO TAB */}
+          {activeTab === "info" && (
+            <motion.div
+              key="info"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            >
+              {CONTACT_INFO.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setActiveInfo(item)}
+                  className="cursor-pointer bg-white/70 backdrop-blur-xl p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all"
+                >
+                  <div className="text-5xl mb-4">{item.emoji}</div>
+                  <h3 className="text-xl font-bold text-brown mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-brown/70">{item.short}</p>
+                  <p className="mt-4 text-sm text-brown/50 italic">
+                    Tap to expand ↗️
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* CONTACT FORM TAB */}
+          {activeTab === "form" && (
+            <motion.form
+              key="form"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              onSubmit={handleSubmit}
+              className="max-w-3xl mx-auto bg-white/70 backdrop-blur-xl p-12 rounded-3xl shadow-2xl space-y-6"
+            >
+              {[
+                { name: "name", placeholder: "👤 Your Name", required: true },
+                { name: "email", placeholder: "📧 Email Address", required: true },
+                { name: "phone", placeholder: "📞 Phone Number", required: false },
+                { name: "subject", placeholder: "📝 Subject", required: true },
+              ].map((field) => (
                 <input
-                  type={field.type}
+                  key={field.name}
                   name={field.name}
                   value={formData[field.name]}
                   onChange={handleChange}
+                  placeholder={field.placeholder}
                   required={field.required}
-                  className="w-full px-4 py-3 rounded-xl border border-brown/50 focus:outline-none focus:ring-2 focus:ring-brown/70 shadow-sm hover:shadow-md transition duration-300"
+                  className="w-full px-5 py-4 rounded-xl border border-brown/40 focus:outline-none focus:ring-2 focus:ring-brown shadow-sm"
                 />
-              </div>
-            ))}
+              ))}
 
-            {/* Message */}
-            <div>
-              <label className="block mb-2 font-semibold text-sm uppercase tracking-wider text-brown/80">
-                Message <span className="text-red-600">*</span>
-              </label>
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
                 rows={5}
+                placeholder="💬 Your Message"
                 required
-                className="w-full px-4 py-3 rounded-xl border border-brown/50 focus:outline-none focus:ring-2 focus:ring-brown/70 shadow-sm hover:shadow-md transition duration-300"
-              ></textarea>
-            </div>
+                className="w-full px-5 py-4 rounded-xl border border-brown/40 focus:outline-none focus:ring-2 focus:ring-brown shadow-sm"
+              />
 
-            <button
-              type="submit"
-              className="w-full py-3 bg-gradient-to-br from-[#B8860B] via-[#8B5A2B] to-[#3E2723]
-               text-cream font-bold rounded-full shadow-inner
-               hover:bg-gradient-to-tr hover:scale-105 hover:shadow-[0_0_15px_rgba(139,90,43,0.5)]
-               transition-all duration-500 tracking-wider"
-            >
-              Send Message
-            </button>
-          </form>
-        </div>
+              <button
+                type="submit"
+                className="w-full py-4 rounded-full bg-gradient-to-r from-[#B8860B] via-[#8B5A2B] to-[#3E2723] text-white font-bold text-lg tracking-wide hover:scale-105 transition-all shadow-xl"
+              >
+                Send Message 🚀
+              </button>
+            </motion.form>
+          )}
+        </AnimatePresence>
       </main>
 
-      {/* Footer */}
+      {/* Zoom Modal */}
+      <AnimatePresence>
+        {activeInfo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-md flex items-center justify-center px-4"
+          >
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.7, opacity: 0 }}
+              className="relative bg-gradient-to-br from-[#fff7ef] to-[#f1dcc6] max-w-lg w-full rounded-3xl p-10 shadow-2xl text-center"
+            >
+              <button
+                onClick={() => setActiveInfo(null)}
+                className="absolute top-4 right-4 text-brown hover:text-red-600"
+              >
+                <X />
+              </button>
+
+              <div className="text-6xl mb-6">{activeInfo.emoji}</div>
+              <h3 className="text-3xl font-extrabold text-brown mb-4">
+                {activeInfo.title}
+              </h3>
+              <pre className="whitespace-pre-wrap text-brown/80 text-lg leading-relaxed">
+                {activeInfo.full}
+              </pre>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Footer />
     </div>
   );
-
 }
-
-
